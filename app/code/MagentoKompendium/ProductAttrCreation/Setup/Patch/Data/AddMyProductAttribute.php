@@ -103,6 +103,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
         /**
          * @var string $backendType
          * possible types: static, varchar, int, decimal, datetime
+         *   data will be stored in DB table catalog_product_entity_[BACKEND_TYPE]
          * static: data is stored in the main table (catalog_product_entity), not in the type-specific table
          * @see $backendTable
          */
@@ -110,7 +111,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
 
         /**
          * @var string|null
-         * define a value table (i.g. "catalog_product_entity_my_varchar"), independently from $backendType
+         * set a value table explicitly (i.g. "catalog_product_entity_my_varchar"), independent from $backendType
          * @see $backendType
          */
         $backendTable = null;
