@@ -205,7 +205,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
 
         /**
          * options are saved in DB tables eav_attribute_option and eav_attribute_option_value
-         * - no store specific values are possible: use $options options instead!
+         * - no store specific values are possible: use $options instead!
          * - only compatible with the following input types: select, multiselect
          * - incompatible with a source model
          * @see $inputType
