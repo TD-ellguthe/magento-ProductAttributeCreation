@@ -243,7 +243,6 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
 //            ],
         ];
 
-
         // validate
         if ((!empty($options)) && (!empty($storeSpecificLabels))) {
             /** @see self::createOptions()*/
@@ -375,6 +374,8 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
         $frontendLabels[] = $this->labelFactory->create()->setStoreId($storeId)->setLabel($label);
 
         $attribute->setFrontendLabels($frontendLabels);
+
+        // caution: this duplicates attribute options from the attribute in Magento 2.4
         $this->attributeRepository->save($attribute);
     }
 
@@ -424,7 +425,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
             $option->setSortOrder($sortOrder++);
             $option->setIsDefault(false);
 
-            // remark: this removes store specific attribute labels from the attribute in Magento 2.4
+            // caution: this removes store specific attribute labels from the attribute in Magento 2.4
             $this->optionManagement->add(Product::ENTITY, $attribute->getAttributeId(), $option);
         }
     }
