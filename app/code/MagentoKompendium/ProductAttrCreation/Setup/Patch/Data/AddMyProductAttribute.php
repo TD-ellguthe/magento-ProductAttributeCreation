@@ -295,7 +295,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
                 'used_for_sort_by'           => false,          // show in "sort by" dropdowns (search / category)
                 'is_used_for_promo_rules'    => false,          // available for in cart rules / catalog rules
                 'table'                      => $backendTable,  // see variable declaration above
-                'note'                       => null,           // string, shown as hint beneath the input in admin area
+                'note'                       => null,           // string, shown as hint under the input in admin area
                 'option' => ['values' => $simpleOptions],       // see variable declaration above
             ]
         );
