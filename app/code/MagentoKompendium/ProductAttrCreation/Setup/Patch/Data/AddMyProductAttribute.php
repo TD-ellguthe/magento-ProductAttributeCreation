@@ -205,6 +205,12 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
         $inputType = 'text';
 
         /**
+         * @var string $attributeSetName
+         * name of the associated attribute set (consistent with $groupName)
+         */
+        $attributeSetName = 'Default';
+
+        /**
          * options are saved in DB tables eav_attribute_option and eav_attribute_option_value
          * - no store specific values are possible: use $options instead!
          * - only compatible with the following input types: select, multiselect
@@ -286,7 +292,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
                 'is_html_allowed_on_front'   => false,          // true: value will be rendered as HTML
                 'unique'                     => false,          // globally unique
                 'apply_to'                   => implode(',', $applicableProductTypes), // see variable declaration above
-                'attribute_set'              => 'Default',      // optional, name of the attribute set (consistent with 'groupName')
+                'attribute_set'              => $attributeSetName, // see variable declaration above
                 'used_in_product_listing'    => false,          // load attribute in collections in category listing
                 'is_used_in_grid'            => false,          // load for product list page (admin area)
                 'is_visible_in_grid'         => false,          // show on product list page (admin area)
@@ -303,7 +309,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
         $attribute = $this->attributeRepository->get(self::ATTR_CODE);
 
         // add attribute to group (create it, if necessary)
-        $this->addAttributeToGroup((int) $attribute->getAttributeId(), $groupName, $groupCode, 5, 10);
+        $this->addAttributeToGroup((int) $attribute->getAttributeId(), $attributeSetName, $groupName, $groupCode, 5, 10);
 
         // set store view specific labels
         foreach ($storeSpecificLabels as $storeId => $label) {
@@ -321,19 +327,22 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
 
     /**
      * @param int $attributeId
+     * @param string $attributeSetName
      * @param string $groupName
      * @param string $groupCode
      * @param int $groupPosInEntity
      * @param int $attrPosInGroup
+     * @throws LocalizedException
      */
     private function addAttributeToGroup(
         int $attributeId,
+        string $attributeSetName,
         string $groupName,
         string $groupCode,
         int $groupPosInEntity,
         int $attrPosInGroup
     ): void {
-        $attributeSetId   = $this->eavSetup->getDefaultAttributeSetId(Product::ENTITY);
+        $attributeSetId   = $this->eavSetup->getAttributeSetId(Product::ENTITY, $attributeSetName);
         $attributeGroupId = $this->catalogConfig->getAttributeGroupId($attributeSetId, $groupName);
 
         if (empty($attributeGroupId)) {
