@@ -210,6 +210,14 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
          */
         $attributeSetName = 'Default';
 
+        try {
+            $attributeSetId = (int) $this->eavSetup->getAttributeSetId(Product::ENTITY, $attributeSetName);
+        } catch (LocalizedException) {
+            // attribute set must be created
+            $this->eavSetup->addAttributeSet($this->productEntityTypeId, $attributeSetName, 10);
+            $attributeSetId = (int) $this->eavSetup->getAttributeSetId(Product::ENTITY, $attributeSetName);
+        }
+
         /**
          * options are saved in DB tables eav_attribute_option and eav_attribute_option_value
          * - no store specific values are possible: use $options instead!
@@ -263,6 +271,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
          * define & add attribute
          * some keys will be mapped to different DB columns
          * @see \Magento\Eav\Model\Entity\Setup\PropertyMapper::map()
+         * phpcs:disable Generic.Files.LineLength.TooLong
          */
         $this->eavSetup->addAttribute(
             Product::ENTITY,
@@ -304,12 +313,20 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
                 'option' => ['values' => $simpleOptions],       // see variable declaration above
             ]
         );
+        // phpcs:enable Generic.Files.LineLength.TooLong
 
         // load newly created attribute
         $attribute = $this->attributeRepository->get(self::ATTR_CODE);
 
         // add attribute to group (create it, if necessary)
-        $this->addAttributeToGroup((int) $attribute->getAttributeId(), $attributeSetName, $groupName, $groupCode, 5, 10);
+        $this->addAttributeToGroup(
+            (int) $attribute->getAttributeId(),
+            $attributeSetId,
+            $groupName,
+            $groupCode,
+            5,
+            10
+        );
 
         // set store view specific labels
         foreach ($storeSpecificLabels as $storeId => $label) {
@@ -327,22 +344,20 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
 
     /**
      * @param int $attributeId
-     * @param string $attributeSetName
+     * @param int $attributeSetId
      * @param string $groupName
      * @param string $groupCode
      * @param int $groupPosInEntity
      * @param int $attrPosInGroup
-     * @throws LocalizedException
      */
     private function addAttributeToGroup(
         int $attributeId,
-        string $attributeSetName,
+        int $attributeSetId,
         string $groupName,
         string $groupCode,
         int $groupPosInEntity,
         int $attrPosInGroup
     ): void {
-        $attributeSetId   = $this->eavSetup->getAttributeSetId(Product::ENTITY, $attributeSetName);
         $attributeGroupId = $this->catalogConfig->getAttributeGroupId($attributeSetId, $groupName);
 
         if (empty($attributeGroupId)) {
