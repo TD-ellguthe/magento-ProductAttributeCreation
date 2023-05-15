@@ -199,10 +199,11 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
         ];
 
         /**
-         * @var $inputType
+         * @var $adminInputType
+         * configures the HTML input type in the admin area
          * possible values: text, int, select, multiselect, date, hidden, boolean, multiline
          */
-        $inputType = 'text';
+        $adminInputType = 'text';
 
         /**
          * @var string $attributeSetName
@@ -223,7 +224,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
          * - no store specific values are possible: use $options instead!
          * - only compatible with the following input types: select, multiselect
          * - incompatible with a source model
-         * @see $inputType
+         * @see $adminInputType
          * @see $sourceModel
          * @see $options
          */
@@ -238,7 +239,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
          * options are saved in DB tables eav_attribute_option and eav_attribute_option_value
          * - only compatible with the following input types: select, multiselect
          * - incompatible with source model
-         * @see $inputType
+         * @see $adminInputType
          * @see $sourceModelClassName
          * @see $simpleOptions
          */
@@ -279,7 +280,7 @@ class AddMyProductAttribute implements DataPatchInterface, PatchRevertableInterf
             [
                 'label'                      => $defaultLabel,  // see variable declaration above
                 'type'                       => $backendType,   // see variable declaration above
-                'input'                      => $inputType,     // see variable declaration above
+                'input'                      => $adminInputType, // see variable declaration above
                 'input_renderer'             => $inputRendererClassName, // see variable declaration above
                 'wysiwyg_enabled'            => false,          // show wysiwyg-editor instead of textarea in admin area
                 'required'                   => true,           // true: needs to have a value set
